@@ -7,7 +7,10 @@ prebuilt wheel include the board's SM (8.7)?** Each failure below is one of thes
 fundamental limitation.
 
 ## llama.cpp: WORKS
-- The current serving image was build 9552; the GDN arch needs >= b10419. Rebuild from `master`
+- The stock serving image was llama.cpp build 9552, older than the build these GGUFs were produced
+  with, so we rebuilt rather than risk a missing arch. A fresh `master` build (verified here with
+  commit `dc72703`) loads Qwen3.8 GDN + vision. Upstream Qwen3-Next / Gated-DeltaNet support landed
+  mid-2026 (for example MTP support PR ggml-org/llama.cpp#25589, 2026-08-03). Build from `master`
   with `-DCMAKE_CUDA_ARCHITECTURES=87`. Runtime needs the JetPack cuBLAS mounted
   (`/usr/local/cuda-12.6/lib64`) because generic aarch64 cuBLAS fails on Tegra unified memory.
 - GGUF Q4_K_M + mmproj (vision) both load. MTP via `--spec-type draft-mtp`.
