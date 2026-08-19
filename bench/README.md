@@ -4,7 +4,7 @@ Two engine-agnostic probes against any OpenAI-compatible `/v1/completions` endpo
 (vLLM, llama.cpp `llama-server`, SGLang, and so on). No dependencies beyond `bash`,
 `curl`, and `python3`.
 
-## `engine_sweep.sh` — concurrency throughput
+## `engine_sweep.sh`: concurrency throughput
 
 Fires N concurrent completion requests and reports aggregate + per-stream decode tok/s
 at each concurrency level. If the server returns native llama.cpp `timings`, it also
@@ -31,7 +31,7 @@ Aggregate = total generated tokens / wall clock of the whole concurrent batch. I
 `usage.completion_tokens` (OpenAI shape) and falls back to `timings.predicted_n`
 (llama.cpp native), so the same script scores every engine comparably.
 
-## `prefix_cache_probe.sh` — shared-prefix TTFT
+## `prefix_cache_probe.sh`: shared-prefix TTFT
 
 Sends a long shared prefix twice with different suffixes at `max_tokens=1` to isolate
 prefill. With prefix caching (vLLM `--enable-prefix-caching`) or RadixAttention (SGLang)

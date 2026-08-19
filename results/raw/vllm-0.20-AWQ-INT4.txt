@@ -1,0 +1,5 @@
+=== vLLM 0.20 Qwen3.8-27B AWQ-INT4 (compressed-tensors), ctx8192, cudagraphs ===
+N=1 | wall=22.4s | gen=200 | AGG=8.9 tok/s | per-stream~8.9
+N=3 | wall=22.1s | gen=600 | AGG=27.2 tok/s | per-stream~9.1
+N=6 | wall=23.3s | gen=1200 | AGG=51.4 tok/s | per-stream~8.6
+DONE

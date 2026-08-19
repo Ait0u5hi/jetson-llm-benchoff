@@ -43,3 +43,14 @@ decode at 16K depth 7.9 tok/s vs 8.3 shallow (minimal degradation).
 - llama.cpp: `unsloth/Qwen3.8-27B-GGUF` UD-Q4_K_M + mmproj-F16; MTP build `Jackrong/Qwen3.8-27B-MTP-GGUF`.
 - vLLM: `cyankiwi/Qwen3.8-27B-AWQ-INT4` (compressed-tensors, asymmetric int4, group_size 32, W4A16), 20 GB.
 - Sampling (thinking): temp 1.0, top_p 0.95, top_k 20, min_p 0. Instruct: temp 0.7, top_p 0.80, presence_penalty 1.5.
+
+## Software versions (for reproducibility)
+
+- Board: L4T R36.5.2 (JetPack 6.x), CUDA 12.6, GPU SM 8.7.
+- vLLM: `vllm==0.20.0+cu126`, `torch==2.11.0` (jetson-ai-lab cu126 index), `nvidia-cudss-cu12==0.8.0.10`,
+  `compressed-tensors==0.18.0`, `transformers==5.15.1`, `xgrammar`. Run with `FLASHINFER_DISABLE_VERSION_CHECK=1`.
+- llama.cpp: built from `master` commit `dc72703`, `-DCMAKE_CUDA_ARCHITECTURES=87`.
+- SGLang (blocked): `sglang==0.5.12`, `sglang-kernel==0.4.2.post2`, `flashinfer-python==0.6.11.post1`.
+
+Raw per-run harness output is in [`raw/`](raw/): `llamacpp-Q4-noFA.txt`, `llamacpp-Q4-flashattn.txt`,
+`llamacpp-Q4-MTP.txt`, `vllm-0.20-AWQ-INT4.txt`.

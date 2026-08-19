@@ -1,0 +1,4 @@
+=== FLASH-ATTN ON, ctx8192 ===
+N=1 | wall=24.6s | gen=200 | AGG=8.1 tok/s | per-stream 8.3/8.3
+N=6 | wall=74.7s | gen=1200 | AGG=16.1 tok/s | per-stream 4.7/6.7
+DONE

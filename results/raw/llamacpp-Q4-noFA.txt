@@ -1,0 +1,5 @@
+=== llama.cpp Qwen3.8-27B UD-Q4_K_M, no-FA, ctx8192 ===
+N=1 | wall=24.9s | gen_tokens=200 | AGG tok/s=8.0 | per-stream tok/s min/max=8.3/8.3
+N=3 | wall=35.3s | gen_tokens=600 | AGG tok/s=17.0 | per-stream tok/s min/max=5.8/5.8
+N=6 | wall=76.6s | gen_tokens=1200 | AGG tok/s=15.7 | per-stream tok/s min/max=4.6/6.7
+DONE

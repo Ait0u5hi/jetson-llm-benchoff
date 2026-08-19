@@ -1,0 +1,5 @@
+=== MTP (draft-mtp n_max=3), Q4_K_M, ctx8192 ===
+N=1 | wall=20.3s | gen=200 | AGG=9.9 tok/s | per-stream 10.3/10.3 | draft_accept=50%
+N=3 | wall=21.5s | gen=600 | AGG=27.9 tok/s | per-stream 9.7/10.5 | draft_accept=58%
+N=6 | wall=57.4s | gen=1200 | AGG=20.9 tok/s | per-stream 6.2/9.6 | draft_accept=56%
+DONE
