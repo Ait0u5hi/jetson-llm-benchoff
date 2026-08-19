@@ -1,102 +1,90 @@
-# Jetson Orin LLM Engine Bench-off: Qwen3.8-27B (GDN hybrid VLM) on SM87
+# jetson-llm-benchoff
 
-A concurrency-aware, multi-engine benchmark and reproducible eval harness for running the
-**Qwen3.8-27B** family (architecture `Qwen3_5ForConditionalGeneration`, a dense Gated-DeltaNet
-hybrid vision-language model) on the **NVIDIA Jetson AGX Orin** (JetPack 6, CUDA 12.6, compute
-capability 8.7).
+Concurrency-aware, multi-engine inference benchmarks for **Qwen3.8-27B** (the `qwen3_5`
+Gated-DeltaNet hybrid vision-language family) on the **NVIDIA Jetson AGX Orin (SM 8.7 / JetPack 6 /
+CUDA 12.6)**, plus a reusable eval harness and a reproducible vLLM install recipe.
 
-Measured on real hardware, 2026-08-19. This repo answers the question the existing Jetson guides do
-not: **how do the engines actually behave under concurrency, and which ones even run this
-architecture on SM87?**
+Most Jetson LLM writeups answer "how do I run it". This repo answers **"which engine and quant do I
+pick, and how fast is it under real concurrency"** for a hybrid-attention VLM, with the negative
+results (which engines do *not* work on SM87, and exactly why) documented so you do not repeat the
+dead ends.
 
-## Why this exists (and how it differs from prior work)
+## What is new here (vs prior art)
 
-Two good resources already cover "how to run vLLM on Jetson Orin":
-[MarkWind85/vllm-jetson-orin](https://github.com/MarkWind85/vllm-jetson-orin) (single-stream vLLM vs
-llama.cpp numbers, GPTQ, Qwen3.5-35B-A3B MoE) and
-[jetson-ai-lab.com/models](https://www.jetson-ai-lab.com/models/) (deployment instructions, no
-numbers). This repo builds on them and adds what neither has:
+This builds on and credits [MarkWind85/vllm-jetson-orin](https://github.com/MarkWind85/vllm-jetson-orin)
+(single-stream vLLM-vs-llama.cpp numbers for Qwen3.5-35B-A3B GPTQ) and the
+[Jetson AI Lab](https://www.jetson-ai-lab.com/models/) run guides. It adds what neither has:
 
-| Contribution | MarkWind85 | jetson-ai-lab | This repo |
-|---|---|---|---|
-| Concurrency scaling (1/3/6 aggregate tok/s) | no | no | **yes** |
-| MTP self-speculation, measured + accept rate | no | no | **yes** |
-| Prefix-caching TTFT impact | no | no | **yes** |
-| Gated-DeltaNet hybrid VLM family (`qwen3_5`) | no (A3B MoE) | partial | **yes** |
-| Engine-viability matrix with root cause (why some engines do not run) | no | no | **yes** |
-| Reusable multi-engine eval harness | single-stream | no | **yes** |
+| Contribution | Prior art | Here |
+|---|---|---|
+| Concurrency scaling (1 / 3 / 6 aggregate tok/s) | not covered | measured, and it flips the verdict |
+| MTP self-speculation impact + accept rate | not covered | measured (+24 to +64%) |
+| Prefix-caching TTFT impact | not covered | measured (5x) |
+| Dense Gated-DeltaNet **VLM** (`qwen3_5`) | A3B MoE only | Qwen3.8-27B, vision included |
+| Engine-viability matrix with root cause | not covered | why SGLang / TokenSpeed do not run on SM87 |
+| Reusable multi-engine eval harness | single-stream scripts | concurrency + prefix + MTP, any OpenAI endpoint |
 
-## Headline results
+## Headline result
 
-Qwen3.8-27B, context 8192, aggregate decode throughput (tokens/sec):
+Aggregate decode throughput, ctx 8192, Qwen3.8-27B, AGX Orin 64GB. `[measured]` 2026-08-19.
 
-| Concurrency | llama.cpp | llama.cpp + MTP | vLLM 0.20 (AWQ-INT4) |
+| Concurrency | llama.cpp Q4 | llama.cpp Q4 + MTP | vLLM 0.20 AWQ-INT4 |
 |---|---|---|---|
 | 1 | 8.0 | 9.9 | 8.9 |
-| 3 | 17.0 | 27.9 | 27.2 |
+| 3 | 17.0 | **27.9** | 27.2 |
 | 6 | 15.7 | 20.9 | **51.4** |
 
-Two findings drive the recommendation:
-1. **llama.cpp saturates at about 3 concurrent** (its aggregate ceiling is ~17 tok/s and it regresses
-   at 6). **vLLM scales near-linearly** (8.9, 27, 51) with per-stream throughput staying flat, and it
-   was not saturated at 6.
-2. **MTP self-speculation helps at every concurrency and does not collapse under batching** here
-   (+24 to +64 percent), because 27B decode on the Orin is memory-bandwidth-bound, so the GPU is not
-   compute-saturated and speculation amortizes weight reads. Draft accept rate 50 to 58 percent.
+**The decision rule this produces:**
 
-Extras:
-- **Prefix caching** (vLLM `--enable-prefix-caching`): 5x faster time-to-first-token on a shared
-  3,285-token prompt (7.0s cold, 1.4s warm). This captures the practical benefit of SGLang
-  RadixAttention without SGLang.
-- **Long context is cheap** on this hybrid: 128K context costs about 5 GB of KV on llama.cpp
-  (only 16 of 64 layers hold KV; the 48 Gated-DeltaNet layers keep a small fixed recurrent state),
-  versus 20 to 40 GB for a same-size dense transformer. Decode barely degrades with depth.
+- **llama.cpp continuous batching saturates at about 3 concurrent** (~17 to 28 tok/s ceiling,
+  regardless of MTP). Best for low concurrency and simplicity, and its 128K context is cheap
+  (~5 GB KV, because the hybrid keeps KV only on the 16 full-attention layers of 64).
+- **vLLM PagedAttention scales close to linearly** (8.9 to 27 to 51, per-stream barely drops) and was
+  not saturating at 6. Best for many concurrent agents or pipelines. At 6 concurrent it is 2.5x
+  llama.cpp+MTP.
+- **MTP self-speculation is a real win and does not collapse under batching here** (+24 to +64%
+  across N=1 to 6, 50 to 58% draft accept) because 27B decode on Orin is memory-bandwidth-bound, so
+  the GPU is not compute-saturated and spec amortizes weight reads. Contrast: a draft-*model* spec
+  setup was net-negative on an A3B MoE in prior fleet testing.
+- **vLLM `--enable-prefix-caching`: 5x faster TTFT** on a shared 3,285-token prompt (7.0s cold to
+  1.4s warm). This captures the headline advantage of SGLang RadixAttention without needing SGLang.
 
-## Recommendation
+## Engine viability on SM 8.7 (only two of five run this model)
 
-- **Many concurrent requests (subagents, pipelines): vLLM 0.20, AWQ-INT4, prefix caching on.**
-- **Low concurrency or minimal footprint: llama.cpp + MTP.** Also the simplest to deploy.
-- Both use INT4 / Q4 quants under 24 GB, so both are portable to a 24 GB Ampere card (SM86).
+`[measured]` 2026-08-19 unless noted.
 
-## Engine viability on SM87 (the part nobody documents)
-
-Only two of five engines actually run this model on JetPack 6. The failures are version-entanglement,
-not fundamental incompatibility, and the root causes are the useful part:
-
-| Engine | Runs Qwen3.8 on SM87 | Root cause |
+| Engine | Runs Qwen3.8-27B on SM87 | Root cause if not |
 |---|---|---|
-| **llama.cpp** | yes | needs build >= b10419 for the GDN arch; rebuild image with `CUDA_ARCH=87` |
-| **vLLM 0.20** | yes | GDN Triton/FLA kernels run; the older "FLA broken on Ampere" issue (#40124) is fixed |
-| **SGLang** | no | latest (0.5.13+) moved to CUDA 13 (incompatible with JetPack 6); the last CUDA-12 version (0.5.12) supports the arch but its compressed-tensors path cannot load an asymmetric-int4-group scheme |
-| **TokenSpeed** | no | supports the arch, but its aarch64 kernels are cp311+ while the Jetson prebuilt torch is cp310-only |
-| **TensorRT-LLM** | not tested | GDN arch not yet in the support matrix; requires host-side engine compilation |
+| **llama.cpp** | yes | rebuilt from master with `CUDA_ARCH=87`; needs a build past GDN support |
+| **vLLM 0.20** | yes | Triton/FLA GDN kernels run; the older #40124 "FLA broken on Ampere" is resolved |
+| **SGLang 0.5.12** | installs, supports `qwen3_5`, but cannot load this quant | its compressed-tensors path lacks the asymmetric int4 group scheme (vLLM has it) |
+| **SGLang 0.5.13+** | no | moved to CUDA 13; incompatible with JetPack 6 / CUDA 12.6 |
+| **TokenSpeed 0.1.0** | no | aarch64 kernels are cp311+, Jetson prebuilt torch is cp310 only |
+| **TensorRT-LLM** | not tested | GDN arch support + host-side engine compile; deprioritized once vLLM won |
 
-See [`results/engine-viability.md`](results/engine-viability.md) for the full breakdown.
+The reusable lesson: on an edge board, check **(arch supported) x (CUDA major matches) x (cpXY matches)
+x (SM in the prebuilt wheel)** before assuming an engine runs. Any one of these silently blocks it.
+
+## Layout
+
+- `results/` measured numbers with full hardware and checkpoint provenance
+- `bench/` the eval harness (concurrency sweep, prefix-cache probe, MTP accept-rate) for any
+  OpenAI-compatible endpoint
+- `recipes/` the vLLM-0.20-on-JetPack-6 install recipe (the non-obvious dependency fixes) and serve script
 
 ## Reproduce
 
-1. Stand up an engine (see [`recipes/`](recipes/)). The vLLM-on-JetPack-6 recipe documents the
-   non-obvious dependency fixes (cuDSS, torch ABI match, undeclared deps, flashinfer version bypass).
-2. Run the harness against any OpenAI-compatible endpoint:
-   ```bash
-   bench/engine_sweep.sh http://localhost:8100/v1/completions qwen38-vllm "1 3 6"
-   bench/prefix_cache_probe.sh http://localhost:8100/v1/completions qwen38-vllm
-   ```
-   The harness is engine-agnostic (works against vLLM, llama.cpp, SGLang, any OpenAI endpoint) and
-   parses native llama.cpp timings for MTP draft accept rate when present.
+See `bench/README.md`. In short: serve the model on any engine, then
 
-## Hardware
+```
+bench/engine_sweep.sh http://localhost:8100/v1/completions qwen38-vllm "1 3 6"
+bench/prefix_cache_probe.sh http://localhost:8100/v1/completions qwen38-vllm
+```
 
-NVIDIA Jetson AGX Orin 64 GB, L4T R36.5.2 (JetPack 6.x), CUDA 12.6, GPU compute capability 8.7,
-61 GiB unified LPDDR5.
+## Scope and honesty
 
-## License
+Single-board, single-run numbers, meant as a directional decision aid and a reproducible harness, not
+a leaderboard. Hardware, checkpoints, flags, and dates are recorded in `results/` so you can rerun and
+disagree. Corrections and other-board results welcome.
 
-Apache-2.0. Model weights are the property of their respective publishers (Qwen, Apache-2.0).
-
-## Credits
-
-Builds on prior Jetson inference work by
-[MarkWind85](https://github.com/MarkWind85/vllm-jetson-orin),
-[thehighnotes](https://huggingface.co/thehighnotes/vllm-jetson-orin), and the
-[NVIDIA Jetson AI Lab](https://www.jetson-ai-lab.com/).
+License: Apache-2.0.
