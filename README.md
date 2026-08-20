@@ -65,11 +65,57 @@ Aggregate decode throughput, ctx 8192, Qwen3.8-27B, AGX Orin 64GB. `[measured]` 
 The reusable lesson: on an edge board, check **(arch supported) x (CUDA major matches) x (cpXY matches)
 x (SM in the prebuilt wheel)** before assuming an engine runs. Any one of these silently blocks it.
 
+## Follow-up benches
+
+Two follow-ups extend the flagship bench-off along different axes. Both use the same box, same
+image, and the same reusable harness in `bench/`.
+
+### Model vs model: is Qwen3.8-27B better than the incumbent primary?
+
+The engine bench-off answers "which engine serves Qwen3.8-27B best". A separate question is
+whether Qwen3.8-27B should replace the current router primary, **Qwen-AgentWorld-35B-A3B** (an A3B
+MoE, ~3B active parameters). Same image, matched flags (`--parallel 6 --flash-attn on --ctx-size
+8192`), llama.cpp on both. `[measured]` 2026-08-19.
+
+| Model | N=1 | N=3 (AGG / per) | N=6 (AGG / per) |
+|---|---|---|---|
+| **qwen-agentworld-35b (IQ4_NL)** | **29.3** | **66.0 / 22.0** | **79.8 / 13.3** |
+| qwen3.8-27b (Q4_K_M, MTP) | 11.1 | 26.1 / 8.7 | 38.5 / 6.4 |
+| qwen3.8-27b (Q4_K_M) | 8.1 | 16.9 / 5.6 | 21.1 / 3.5 |
+
+**AgentWorld wins ~2.1 to 2.6x at every concurrency point** because A3B MoE decode touches ~3B
+active params vs 3.8-27B's 27B dense. Verdict: **coexist** — keep AgentWorld as `:8010` primary,
+add 3.8-27B-MTP as a swap-preset only for VLM + long-context (>65K) work that AgentWorld cannot
+serve. Full doc: [`results/agentworld_vs_qwen38.md`](results/agentworld_vs_qwen38.md).
+
+### Perf-angles: TTFT, long-ctx degradation, prefix-cache, KV footprint
+
+Four additional serving-relevant lenses on the same three models, measured at `--parallel 1`
+(matches the production `:8010` swap-router config; safer than the `parallel=6` bench, which
+triggered a Tegra NVRM DCE-RPC hard-hang once and needs a physical power cycle to recover).
+`[measured]` 2026-08-19.
+
+- **TTFT p50 (warm, 20 gen tokens):** Qwen3.6-35B 0.20s < AgentWorld 0.40s < Qwen3.8-27B-MTP
+  1.11s. Tight P99 (within ~10% of P50) — no long-tail hitches on any model.
+- **Long-context tps at 32K:** AgentWorld 0.96 / 3.6-35B 0.71 / 3.8-27B-MTP 0.22. Prompt-eval,
+  not decode, dominates at scale.
+- **Prefix-cache speedup on 4K shared prefix:** 3.8-27B-MTP **2.26x**, 3.6-35B 1.59x,
+  AgentWorld 1.30x. 3.8-27B benefits most because its prompt-eval cost is highest to elide.
+- **KV memory at max ctx:** 3.8-27B-MTP holds **128K ctx in 27.87 GB** total (weights + KV),
+  vs AgentWorld's 65K ceiling in 20.08 GB. GDN hybrid keeps KV on only 16 of 64 layers, so
+  128K is memory-viable on 61 GB unified LPDDR5 even with the aux stack resident.
+
+Full doc: [`results/perf_angles_2026-08-19.md`](results/perf_angles_2026-08-19.md).
+
 ## Layout
 
 - `results/` measured numbers with full hardware and checkpoint provenance
-- `bench/` the eval harness (concurrency sweep, prefix-cache probe, MTP accept-rate) for any
-  OpenAI-compatible endpoint
+  - `qwen3.8-27b-agx-orin.md` — the flagship engine bench-off
+  - `agentworld_vs_qwen38.md` — model-vs-model head-to-head (matched flags, llama.cpp on both)
+  - `perf_angles_2026-08-19.md` — TTFT, long-ctx, prefix-cache, KV footprint
+  - `raw/` — raw sweep + probe outputs, one file per (engine × model) or (angle × model)
+- `bench/` the eval harness (concurrency sweep, prefix-cache probe, MTP accept-rate,
+  perf-angles) for any OpenAI-compatible endpoint
 - `recipes/` the vLLM-0.20-on-JetPack-6 install recipe (the non-obvious dependency fixes) and serve script
 
 ## Reproduce
@@ -79,7 +125,12 @@ See `bench/README.md`. In short: serve the model on any engine, then
 ```
 bench/engine_sweep.sh http://localhost:8100/v1/completions qwen38-vllm "1 3 6"
 bench/prefix_cache_probe.sh http://localhost:8100/v1/completions qwen38-vllm
+bench/perf_angles.sh <alias> <gguf_relpath> <max_ctx> [spec_flags]
 ```
+
+The perf-angles script is llama.cpp-specific (it manages a container lifecycle for
+memory-footprint measurement); the other two work against any OpenAI-compatible
+`/v1/completions` endpoint.
 
 ## Scope and honesty
 
