@@ -1,0 +1,45 @@
+# Patterns for reusable-content-scan.yml.
+# One ripgrep regex per line. `#` starts a comment. Blank lines ignored.
+# When a review sweep finds new leaked content, add the pattern here so
+# the next PR fails until it is removed.
+#
+# NOTE this file lives in THIS repo, not gh-workflows — the shared
+# reusable ships no wordlist.
+
+# --- private LAN topology (RFC1918) ---
+\b10\.10\.0\.
+\b192\.168\.
+
+# --- private hostnames / box aliases ---
+\barthur\b
+\bagx-node\b
+\bbifrost\b
+\bheimdall\b
+
+# --- internal project codenames not for public docs ---
+\bnusomi\b
+\bspectry\b
+\bcorrograph\b
+\bfleet-harness\b
+\bgrounder-bench\b
+# "Hermes" is generic enough to hit false positives (Greek god, etc.);
+# scope to the internal-agent sense with the surrounding capitalization.
+\bHermes\s+(agent|slot|plugin|gateway)\b
+
+# --- internal-jargon phrases ---
+\baux fleet\b
+\baux stack\b
+\bswap[- ]router\b
+
+# --- journal-voice phrases ---
+\bfor tonight\b
+\bnext[- ]session\b
+\bstopping point\b
+\bqueued next-session\b
+
+# --- absolute homedir paths that leak the box layout ---
+/home/agx_orin
+/generative-AI-models
+
+# --- real-name / real-email patterns ---
+noah@x\.com
