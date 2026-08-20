@@ -45,7 +45,7 @@ Aggregate decode throughput, ctx 8192, Qwen3.8-27B, AGX Orin 64GB. `[measured]` 
 - **MTP self-speculation is a real win and does not collapse under batching here** (+24 to +64%
   across N=1 to 6, 50 to 58% draft accept) because 27B decode on Orin is memory-bandwidth-bound, so
   the GPU is not compute-saturated and spec amortizes weight reads. Contrast: a draft-*model* spec
-  setup was net-negative on an A3B MoE in prior fleet testing.
+  setup was net-negative on an A3B MoE in prior testing on this platform.
 - **vLLM `--enable-prefix-caching`: 5x faster TTFT** on a shared 3,285-token prompt (7.0s cold to
   1.4s warm). This captures the headline advantage of SGLang RadixAttention without needing SGLang.
 
@@ -84,15 +84,16 @@ MoE, ~3B active parameters). Same image, matched flags (`--parallel 6 --flash-at
 | qwen3.8-27b (Q4_K_M) | 8.1 | 16.9 / 5.6 | 21.1 / 3.5 |
 
 **AgentWorld wins ~2.1 to 2.6x at every concurrency point** because A3B MoE decode touches ~3B
-active params vs 3.8-27B's 27B dense. Verdict: **coexist** — keep AgentWorld as `:8010` primary,
-add 3.8-27B-MTP as a swap-preset only for VLM + long-context (>65K) work that AgentWorld cannot
-serve. Full doc: [`results/agentworld_vs_qwen38.md`](results/agentworld_vs_qwen38.md).
+active params vs 3.8-27B's 27B dense. Verdict: **coexist** — keep AgentWorld as the primary
+`:8010` slot, add 3.8-27B-MTP as a swap-preset only for VLM + long-context (>65K) work that
+AgentWorld cannot serve. Full doc: [`results/agentworld_vs_qwen38.md`](results/agentworld_vs_qwen38.md).
 
 ### Perf-angles: TTFT, long-ctx degradation, prefix-cache, KV footprint
 
 Four additional serving-relevant lenses on the same three models, measured at `--parallel 1`
-(matches the production `:8010` swap-router config; safer than the `parallel=6` bench, which
-triggered a Tegra NVRM DCE-RPC hard-hang once and needs a physical power cycle to recover).
+(matches the reference `:8010` serving config used throughout this repo; safer than the
+`parallel=6` bench, which triggered a Tegra NVRM DCE-RPC hard-hang once and needs a physical
+power cycle to recover).
 `[measured]` 2026-08-19.
 
 - **TTFT p50 (warm, 20 gen tokens):** Qwen3.6-35B 0.20s < AgentWorld 0.40s < Qwen3.8-27B-MTP
@@ -103,7 +104,7 @@ triggered a Tegra NVRM DCE-RPC hard-hang once and needs a physical power cycle t
   AgentWorld 1.30x. 3.8-27B benefits most because its prompt-eval cost is highest to elide.
 - **KV memory at max ctx:** 3.8-27B-MTP holds **128K ctx in 27.87 GB** total (weights + KV),
   vs AgentWorld's 65K ceiling in 20.08 GB. GDN hybrid keeps KV on only 16 of 64 layers, so
-  128K is memory-viable on 61 GB unified LPDDR5 even with the aux stack resident.
+  128K is memory-viable on 61 GB unified LPDDR5 even with co-resident auxiliary models loaded.
 
 Full doc: [`results/perf_angles_2026-08-19.md`](results/perf_angles_2026-08-19.md).
 
@@ -114,8 +115,8 @@ Full doc: [`results/perf_angles_2026-08-19.md`](results/perf_angles_2026-08-19.m
   - `agentworld_vs_qwen38.md` — model-vs-model head-to-head (matched flags, llama.cpp on both)
   - `perf_angles_2026-08-19.md` — TTFT, long-ctx, prefix-cache, KV footprint
   - `raw/` — raw sweep + probe outputs, one file per (engine × model) or (angle × model)
-- `bench/` the eval harness (concurrency sweep, prefix-cache probe, MTP accept-rate,
-  perf-angles) for any OpenAI-compatible endpoint
+- `bench/` reusable probe scripts (concurrency sweep, prefix-cache probe, perf-angles)
+  for any OpenAI-compatible endpoint
 - `recipes/` the vLLM-0.20-on-JetPack-6 install recipe (the non-obvious dependency fixes) and serve script
 
 ## Reproduce
@@ -131,6 +132,9 @@ bench/perf_angles.sh <alias> <gguf_relpath> <max_ctx> [spec_flags]
 The perf-angles script is llama.cpp-specific (it manages a container lifecycle for
 memory-footprint measurement); the other two work against any OpenAI-compatible
 `/v1/completions` endpoint.
+
+`perf_angles.sh` mounts a GGUF directory into the container at `/models`. Set
+`MODELS_DIR=/path/to/your/gguf` before invoking; defaults to `/models` if unset.
 
 ## Scope and honesty
 

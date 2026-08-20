@@ -1,3 +1,4 @@
+// NOTE: raw model output. The tool_call test 'to' field originally contained a placeholder-looking email address (model-generated, not real) — redacted here as "[redacted]" to avoid the appearance of a real address.
 {
   "model": "qwen-agentworld-35b",
   "results": [
@@ -11,7 +12,7 @@
       "name": "tool_call",
       "pass": true,
       "dur": 1.5,
-      "out": "{\"tool\": \"send_email\", \"args\": {\"to\": \"noah@x.com\", \"subject\": \"ping\", \"body\": \"hi\"}}"
+      "out": "{\"tool\": \"send_email\", \"args\": {\"to\": \"[redacted]\", \"subject\": \"ping\", \"body\": \"hi\"}}"
     },
     {
       "name": "instr_follow",

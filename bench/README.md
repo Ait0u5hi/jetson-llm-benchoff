@@ -1,6 +1,6 @@
-# Eval harness
+# Bench probes
 
-Two engine-agnostic probes against any OpenAI-compatible `/v1/completions` endpoint
+Engine-agnostic probes against any OpenAI-compatible `/v1/completions` endpoint
 (vLLM, llama.cpp `llama-server`, SGLang, and so on). No dependencies beyond `bash`,
 `curl`, and `python3`.
 
