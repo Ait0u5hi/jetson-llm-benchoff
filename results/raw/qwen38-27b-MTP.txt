@@ -1,0 +1,4 @@
+== engine_sweep: qwen3.8-27b-mtp @ http://localhost:8100/v1/completions (n_predict=200) ==
+N= 1 | wall= 18.0s | gen_tokens=  200 | AGG=  11.1 tok/s | per-stream~ 11.1 | draft_accept=60%
+N= 3 | wall= 23.0s | gen_tokens=  600 | AGG=  26.1 tok/s | per-stream~  8.7 | draft_accept=59%
+N= 6 | wall= 31.2s | gen_tokens= 1200 | AGG=  38.5 tok/s | per-stream~  6.4 | draft_accept=60%
