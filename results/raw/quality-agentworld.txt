@@ -1,0 +1,25 @@
+{
+  "model": "qwen-agentworld-35b",
+  "results": [
+    {
+      "name": "json_extract",
+      "pass": true,
+      "dur": 1.3,
+      "out": "{\"name\": \"Jane Cortez\", \"age\": 34}"
+    },
+    {
+      "name": "tool_call",
+      "pass": true,
+      "dur": 1.5,
+      "out": "{\"tool\": \"send_email\", \"args\": {\"to\": \"noah@x.com\", \"subject\": \"ping\", \"body\": \"hi\"}}"
+    },
+    {
+      "name": "instr_follow",
+      "pass": true,
+      "dur": 0.6,
+      "out": "APPLE, BANANA, ORANGE"
+    }
+  ]
+}
+
+SUMMARY qwen-agentworld-35b: 3/3 passed

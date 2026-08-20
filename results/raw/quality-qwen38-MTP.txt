@@ -1,0 +1,25 @@
+{
+  "model": "qwen3.8-27b-mtp",
+  "results": [
+    {
+      "name": "json_extract",
+      "pass": true,
+      "dur": 2.1,
+      "out": "{\"name\": \"Jane Cortez\", \"age\": 34}"
+    },
+    {
+      "name": "tool_call",
+      "pass": true,
+      "dur": 3.2,
+      "out": "{\"tool\": \"send_email\", \"args\": {\"to\": \"noah@x.com\", \"subject\": \"ping\", \"body\": \"hi\"}}"
+    },
+    {
+      "name": "instr_follow",
+      "pass": true,
+      "dur": 1.6,
+      "out": "APPLE, BANANA, CHERRY"
+    }
+  ]
+}
+
+SUMMARY qwen3.8-27b-mtp: 3/3 passed
