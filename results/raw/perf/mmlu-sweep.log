@@ -1,0 +1,80 @@
+
+=== 2026-08-19T21:24:02-05:00 MMLU qwen-agentworld-35b ===
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/_cli/harness.py", line 60, in execute
+    args.func(args)
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/_cli/run.py", line 391, in _execute
+    results = simple_evaluate(
+              ^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/utils.py", line 575, in _wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/evaluator.py", line 358, in simple_evaluate
+    results = evaluate(
+              ^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/utils.py", line 575, in _wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/evaluator.py", line 596, in evaluate
+    resps = getattr(lm, reqtype)(cloned_reqs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/models/openai_completions.py", line 239, in loglikelihood
+    raise NotImplementedError(
+NotImplementedError: Loglikelihood is not supported for chat completions. Consider using the completions API instead.
+MMLU_qwen-agentworld-35b DONE in 189s
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1887) [Receiver=3.2.7]
+rsync: [Receiver] write error: Broken pipe (32)
+benchoff-run
+
+=== 2026-08-19T21:27:44-05:00 MMLU qwen3.8-27b-mtp ===
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/_cli/harness.py", line 60, in execute
+    args.func(args)
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/_cli/run.py", line 391, in _execute
+    results = simple_evaluate(
+              ^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/utils.py", line 575, in _wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/evaluator.py", line 358, in simple_evaluate
+    results = evaluate(
+              ^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/utils.py", line 575, in _wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/evaluator.py", line 596, in evaluate
+    resps = getattr(lm, reqtype)(cloned_reqs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/models/openai_completions.py", line 239, in loglikelihood
+    raise NotImplementedError(
+NotImplementedError: Loglikelihood is not supported for chat completions. Consider using the completions API instead.
+MMLU_qwen3.8-27b-mtp DONE in 52s
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1887) [Receiver=3.2.7]
+rsync: [Receiver] write error: Broken pipe (32)
+benchoff-run
+
+=== 2026-08-19T21:29:09-05:00 MMLU qwen3.6-35b ===
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/_cli/harness.py", line 60, in execute
+    args.func(args)
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/_cli/run.py", line 391, in _execute
+    results = simple_evaluate(
+              ^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/utils.py", line 575, in _wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/evaluator.py", line 358, in simple_evaluate
+    results = evaluate(
+              ^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/utils.py", line 575, in _wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/evaluator.py", line 596, in evaluate
+    resps = getattr(lm, reqtype)(cloned_reqs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lancelot/evals-venv/lib/python3.12/site-packages/lm_eval/models/openai_completions.py", line 239, in loglikelihood
+    raise NotImplementedError(
+NotImplementedError: Loglikelihood is not supported for chat completions. Consider using the completions API instead.
+MMLU_qwen3.6-35b DONE in 52s
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1887) [Receiver=3.2.7]
+rsync: [Receiver] write error: Broken pipe (32)
+benchoff-run
+
+=== 2026-08-19T21:30:40-05:00 MMLU SWEEP DONE ===
