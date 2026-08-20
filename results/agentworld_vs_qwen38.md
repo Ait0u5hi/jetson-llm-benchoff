@@ -1,9 +1,9 @@
 # AgentWorld-35B vs Qwen3.8-27B on AGX Orin — head-to-head verdict
 
 **Question.** Should Qwen3.8-27B (dense hybrid GDN VLM) replace Qwen-AgentWorld-35B-A3B
-(A3B MoE, ~3B active) as the `:8010` swap-router primary?
+(A3B MoE, ~3B active) as the primary model behind the reference serving config (`:8010`)?
 
-**Measured 2026-08-19** on agx-node (JetPack 6.x / CUDA 12.6 / SM87). All three configs
+**Measured 2026-08-19** on Jetson AGX Orin (64GB, JetPack 6.x / CUDA 12.6 / SM87). All three configs
 served by the same rebuilt image `llamacpp-jetson:qwen38` (llama.cpp master with GDN/MTP)
 with identical flags: `--ctx-size 8192 --parallel 6 --flash-attn on --batch-size 2048
 --ubatch-size 512 --n-gpu-layers 99`. Sweep tool: `bench/engine_sweep.sh` (`n_predict=200`,
@@ -55,16 +55,16 @@ decisive signal for a serving decision. Raw responses in `results/raw/quality-*.
   context is memory-cheap on this box (verified upstream: ~5 GB KV at 128K).
 - **Newer arch / newer training data** (shipped 2026-08-14).
 
-None of these are load-bearing for the primary swap-router slot today — most `:8010`
-traffic is text agent orchestration, at concurrency 1–3 (subagent bursts), where
-AgentWorld's per-token cost dominates.
+None of these are load-bearing for the primary serving slot today — most `:8010`
+traffic in the deployment measured here is text agent orchestration, at concurrency
+1–3 (subagent bursts), where AgentWorld's per-token cost dominates.
 
 ## VERDICT — **COEXIST (keep AgentWorld primary, add 3.8-27B as an on-demand preset)**
 
 1. **AgentWorld-35B stays the `:8010` default.** No config change needed. It beats
    Qwen3.8-27B on every concurrency point by ~2.5× at parity quality on the agentic
    prompts that dominate its actual traffic.
-2. **Add Qwen3.8-27B (MTP) as a `:8010` swap-loadable preset** for the two workloads
+2. **Add Qwen3.8-27B (MTP) as a swap-loadable `:8010` preset** for the two workloads
    it uniquely serves:
    - **Vision-input tasks** (only qwen3.8-27b and llama.cpp `mmproj` on this box handle
      images natively).
@@ -73,14 +73,14 @@ AgentWorld's per-token cost dominates.
 3. **Do NOT add non-MTP Qwen3.8-27B.** MTP is strictly better on this hardware
    (+37–83% throughput, no quality regression, same disk footprint).
 
-### Router.ini diff (proposed, not yet applied)
+### Example serving-config entry (illustrative)
 
 ```ini
 [qwen3.8-27b-mtp]
 model            = /models/Jackrong_Qwen3.8-27B-MTP-Q4_K_M/Qwen3.8-27B-MTP-Q4_K_M.gguf
 ctx-size         = 65536      ; can raise to 131072 if a caller needs it (~5GB extra KV)
 n-gpu-layers     = 99
-parallel         = 1          ; matches other :8010 presets — bump only for a bench window
+parallel         = 1          ; matches other serving presets — bump only for a bench window
 no-warmup        = 1
 jinja            = 1
 flash-attn       = on
@@ -90,8 +90,8 @@ batch-size       = 2048
 ubatch-size      = 512
 ```
 
-No Hermes slot change unless a caller specifically wants VLM/long-ctx routing (the
-current slots are text-only and better served by AgentWorld).
+No primary-router slot change unless a caller specifically wants VLM/long-ctx routing
+(the current slots are text-only and better served by AgentWorld).
 
 ## Method notes / limits
 

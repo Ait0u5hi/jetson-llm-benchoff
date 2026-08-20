@@ -22,7 +22,7 @@ BEFORE_MEM=$(free -b | awk '/Mem/ {print $3}')
 echo "MEM_USED_BEFORE_LOAD_BYTES=$BEFORE_MEM"
 
 docker run -d --rm --name benchoff-run --runtime nvidia --network host \
-  -v /generative-AI-models/gguf:/models \
+  -v "${MODELS_DIR:-/models}":/models \
   -v /usr/local/cuda-12.6/lib64:/jetpack-cuda:ro \
   -e NVIDIA_VISIBLE_DEVICES=all -e LD_LIBRARY_PATH=/jetpack-cuda \
   llamacpp-jetson:qwen38 \

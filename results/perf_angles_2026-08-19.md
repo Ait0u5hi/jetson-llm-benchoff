@@ -1,16 +1,17 @@
 # Perf-angles bench: AgentWorld-35B vs Qwen3.8-27B-MTP vs Qwen3.6-35B on AGX Orin
 
-**Measured 2026-08-19** on agx-node (JetPack 6.x / CUDA 12.6 / SM87, 61 GiB unified LPDDR5).
+**Measured 2026-08-19** on Jetson AGX Orin (64GB, JetPack 6.x / CUDA 12.6 / SM87, 61 GiB unified LPDDR5).
 Same rebuilt image `llamacpp-jetson:qwen38` (llama.cpp master with GDN/MTP), same flags:
 `--parallel 1 --flash-attn on --batch-size 2048 --ubatch-size 512 --cache-reuse 256
---n-gpu-layers 99`. Sequential across models (no concurrent bench containers, aux fleet
-stayed running) to match the production `:8010` swap-router config. Raw outputs:
+--n-gpu-layers 99`. Sequential across models (no concurrent bench containers,
+co-resident auxiliary models stayed running) to match the reference serving config
+(`:8010`, see `recipes/llamacpp.md`). Raw outputs:
 `results/raw/perf/{qwen-agentworld-35b,qwen3.8-27b-mtp,qwen3.6-35b}.txt`.
 
 Sequential-safe config chosen deliberately: an earlier `parallel=6` bench triggered an
 unrecoverable NVRM DCE-RPC hang (`NVRM_RPC_DCE: Failed RM ctrl call cmd:0x731341
 result 0xffff`, followed by system-wide soft-lockup requiring physical power cycle).
-`parallel=1` is what `:8010` runs every day without incident.
+`parallel=1` is what the reference `:8010` serving config runs without incident.
 
 ## (1) TTFT distribution (short prompt, 20 gen tokens, 1 cold + 29 warm)
 
@@ -68,8 +69,8 @@ narrows toward the A3B pack.**
 
 3.8-27B holds 2× the context in 1.4× the memory — the GDN hybrid claim ("only 16/64 layers
 hold full KV") is measurable. Concrete implication: an on-demand swap-preset for 3.8-27B
-at 128K ctx is memory-feasible even with the current aux fleet resident (61 GB total,
-~30 GB free after aux stack).
+at 128K ctx is memory-feasible even with the co-resident auxiliary models loaded
+(61 GB total, ~30 GB free after the auxiliary set).
 
 ## (5) MMLU: deferred
 
@@ -84,7 +85,7 @@ for this run. Deferred to a dedicated quality-eval run on a different backend.
 
 These angles ratify and sharpen the earlier `agentworld_vs_qwen38.md` COEXIST verdict:
 
-- **AgentWorld stays `:8010` default.** Faster per-request (2.75× TTFT lead), faster
+- **AgentWorld stays the `:8010` default.** Faster per-request (2.75× TTFT lead), faster
   long-ctx throughput, sufficient 65K ceiling for text-agent work.
 - **Add 3.8-27B-MTP as swap-preset with confidence on two grounds now measured, not just
   asserted:** (a) 128K ctx is memory-viable at 27.87 GB, (b) prefix-cache reclaims 55% of
@@ -94,10 +95,12 @@ These angles ratify and sharpen the earlier `agentworld_vs_qwen38.md` COEXIST ve
 
 ## Method notes
 
-- All numbers from a single-process llama-server per model, `--parallel 1`, no aux fleet
-  changes. Sequential model swaps with 10-15s GPU-settle sleeps between.
-- Bench scripts: `bench/perf_angles.sh` (one model, four angles), `bench/mmlu_sequential.sh`
-  (MMLU driver, blocked as noted).
+- All numbers from a single-process llama-server per model, `--parallel 1`, no changes
+  to co-resident auxiliary models. Sequential model swaps with 10-15s GPU-settle sleeps
+  between.
+- Bench script: `bench/perf_angles.sh` (one model, four angles). The MMLU driver used
+  a separate off-box lm-eval invocation (not included; see method note above for the
+  llama-server logprobs-shape blocker that made it non-portable).
 - Long-ctx test uses real prompt-fill with tokenized filler; the reported prompt-tokens
   count is what the model actually saw (`usage.prompt_tokens`).
 - Prefix-cache test uses `--cache-reuse 256` on server; measures cold TTFT vs warm-mean
