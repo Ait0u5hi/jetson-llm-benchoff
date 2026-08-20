@@ -1,7 +1,7 @@
 #!/bin/bash
 # Perf-angles bench for one model: TTFT distribution, long-ctx throughput,
-# prefix-cache effectiveness, KV memory footprint. Parallel=1, matches the
-# :8010 production config to avoid the DCE-RPC hang seen 2026-08-19 at parallel=6.
+# prefix-cache effectiveness, KV memory footprint. Parallel=1 — parallel=6
+# triggered an NVRM DCE-RPC fault mode on this platform (see results/perf_angles).
 set -uo pipefail
 
 MODEL_ALIAS=$1        # e.g. qwen-agentworld-35b

@@ -78,7 +78,7 @@ llama-server's `/v1/completions` endpoint. Blocker: llama-server's logprobs resp
 does not match what lm-eval's loglikelihood parser expects (`KeyError: 'token_logprobs'`).
 Chat-completions has no loglikelihood at all (`NotImplementedError`). Working around this
 means either a llama.cpp fork/patch or moving to a vLLM/SGLang backend, both out of scope
-for tonight. Deferred to a dedicated Arthur-side quality run.
+for this run. Deferred to a dedicated quality-eval run on a different backend.
 
 ## Reconciliation with the head-to-head throughput verdict
 

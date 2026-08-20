@@ -95,23 +95,22 @@ current slots are text-only and better served by AgentWorld).
 
 ## Method notes / limits
 
-- Fair comparison only on the same image + flags. Prior 2026-08-19 numbers (memory
-  `project_qwen38_engine_benchoff_20260819`) used a different container config; the
-  matched-config MTP sanity run here (11.1/26.1/38.5) reproduces the prior baseline at
+- Fair comparison only on the same image + flags. Prior 2026-08-19 numbers used a
+  different container config; the matched-config MTP sanity run here
+  (11.1/26.1/38.5) reproduces the prior baseline at
   low N (9.9/27.9) within ±15% and is cleaner at N=6 (38.5 vs prior 20.9), consistent
   with a correctly-set `--parallel 6`.
 - Quality eval is 3 prompts × 3 models — enough to rule out catastrophic regression, not
-  enough to detect nuanced quality differences. If we ever want to promote 3.8-27B for
-  reasoning-heavy work, run it through `~/grounder-bench` or a proper synth-harness slot
-  eval before deciding.
+  enough to detect nuanced quality differences. Promoting 3.8-27B for reasoning-heavy
+  work would require running it through a proper quality-eval harness before deciding.
 - No vLLM number here — the prior bench-off already established vLLM 0.20 as the
   concurrency winner for 3.8-27B; that comparison stands and is orthogonal to
-  "which model in the llama.cpp swap slot". Deploying vLLM as a permanent slot is
-  question #2 in the queued next-session split.
+  "which model in the llama.cpp swap slot". Deploying vLLM as a permanent serving
+  slot is a separate open question.
 
 ## Deliverables
 
 - Sweep raw: `results/raw/{agentworld-35b-Q4,qwen38-27b-Q4,qwen38-27b-MTP}.txt`.
 - Quality raw: `results/raw/quality-{agentworld,qwen38-Q4,qwen38-MTP}.txt`.
 - Bench script (reusable, unchanged): `bench/engine_sweep.sh`.
-- Quality eval script: `/tmp/.../scratchpad/quality_eval.py` (small; not committed).
+- Quality eval script: small ad-hoc driver, not included.
