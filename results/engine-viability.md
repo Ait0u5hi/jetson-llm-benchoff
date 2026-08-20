@@ -8,7 +8,7 @@ fundamental limitation.
 
 ## llama.cpp: WORKS
 - The stock serving image was llama.cpp build 9552, older than the build these GGUFs were produced
-  with, so we rebuilt rather than risk a missing arch. A fresh `master` build (verified here with
+  with, so the image was rebuilt rather than risk a missing arch. A fresh `master` build (verified here with
   commit `dc72703`) loads Qwen3.8 GDN + vision. Upstream Qwen3-Next / Gated-DeltaNet support landed
   mid-2026 (for example MTP support PR ggml-org/llama.cpp#25589, 2026-08-03). Build from `master`
   with `-DCMAKE_CUDA_ARCHITECTURES=87`. Runtime needs the JetPack cuBLAS mounted

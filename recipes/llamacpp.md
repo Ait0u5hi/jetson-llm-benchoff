@@ -18,7 +18,7 @@ the JetPack cuBLAS and point the loader at it:
 -v /usr/local/cuda-12.6/lib64:/jetpack-cuda:ro  -e LD_LIBRARY_PATH=/jetpack-cuda
 ```
 
-## Serve (with MTP self-speculation, the +64% @3 concurrent win)
+## Serve (with MTP self-speculation — +64% throughput at 3 concurrent)
 ```bash
 llama-server \
   -m /models/Qwen3.8-27B-MTP-Q4_K_M.gguf \
