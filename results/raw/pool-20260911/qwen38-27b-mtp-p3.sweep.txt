@@ -1,0 +1,4 @@
+== engine_sweep: qwen38-27b-mtp-p3 @ http://127.0.0.1:8011/v1/completions (n_predict=200) ==
+N= 1 | wall= 19.9s | gen_tokens=  200 | AGG=  10.0 tok/s | per-stream~ 10.0 | draft_accept=60%
+N= 3 | wall= 56.4s | gen_tokens=  600 | AGG=  10.6 tok/s | per-stream~  3.5 | draft_accept=60%
+router requests to :8010 during sweep: 0 (0 = clean)

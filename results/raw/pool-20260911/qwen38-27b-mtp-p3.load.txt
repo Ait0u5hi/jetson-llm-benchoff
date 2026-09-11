@@ -1,0 +1,8 @@
+1.11.633.612 W llama_context: n_ctx_seq (8192) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+1.14.769.713 W llama_context: n_ctx_seq (8192) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+1.15.643.965 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 8192
+1.15.643.979 I slot   load_model: id  1 | task -1 | new slot, n_ctx = 8192
+1.15.643.980 I slot   load_model: id  2 | task -1 | new slot, n_ctx = 8192
+               total        used        free      shared  buff/cache   available
+Mem:              61          48           0           0          12          12
+RSS_kB VmRSS:	19897636 kB

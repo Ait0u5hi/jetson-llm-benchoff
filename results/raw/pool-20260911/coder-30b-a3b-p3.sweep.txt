@@ -1,0 +1,4 @@
+== engine_sweep: coder-30b-a3b-p3 @ http://127.0.0.1:8011/v1/completions (n_predict=200) ==
+N= 1 | wall=  4.4s | gen_tokens=  200 | AGG=  45.9 tok/s | per-stream~ 45.9
+N= 3 | wall=  6.2s | gen_tokens=  600 | AGG=  97.1 tok/s | per-stream~ 32.4
+router requests to :8010 during sweep: 0 (0 = clean)
