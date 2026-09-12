@@ -1,0 +1,66 @@
+python3 runner/router.py "Small local models for an agent-memory node on a Jetson Orin Nano (7.6 GB unified RAM, JetPack 6 / CUDA 12.6, llama.cpp GGUF): (1) best 2026 sub-3B instruction models for structured fact extraction to strict JSON (candidates to compare against our deployed gemma-4-E2B and Qwen3.5-2B: e.g. Qwen3.x 1.7B/2B, LFM2.5 1.2B/8B-A1B, Gemma 4 E2B/E4B, SmolLM3, Phi-4-mini, Granite 4 micro/tiny) with cited benchmarks for JSON/format compliance and extraction (IFEval, BFCL, structured-output evals) and memory footprint at Q4; (2) best small embedding models for memory recall (Qwen3-Embedding-0.6B currently; compare nomic-embed-text-v1.5, EmbeddingGemma-300M, bge-small/base, Granite-Embedding-R2, snowflake-arctic-embed-s, MiniLM) with MTEB retrieval scores, dimension, RAM at Q8, and llama.cpp support; (3) any evidence on running an extraction LLM plus an embedder together within ~4 GB. Cite dated sources; flag vendor claims vs independent measurements."  --domain market --effort standard
+[run] scoping on gateway-strong
+[discovery] weak corroboration (1 domain(s)): Phi-4
+[discovery] weak corroboration (1 domain(s)): Ministral
+[run] players found: Qwen 3.5 (andrejusb.blogspot.com), Gemma 4 (insiderllm.com), Llama 4 (baeseokjae.github.io), Llama-Embed-Nemotron-8B (huggingface.co), Jetson Orin Nano (developer.nvidia.com), llama.cpp (gist.github.com)
+[run] working thesis: The strongest 2026 Jetson Orin Nano agent-memory stack will be Qwen 3.5 2B for strict JSON extraction plus Qwen3-Embedding-0.6B for recall, because dated independent benchmarks and llama.cpp memory evidence show they outperform or match Gemma 4 E2B and Llama-Embed-Nemotron-8B within ~4 GB.
+[run]   Q1: Do dated official model cards, llama.cpp issues/PRs, or independent evals show that Qwen 3.5 1.7B/2B, Gemma 4 E2B/E4B, or Llama 4 sub-3B variants outperform the deployed gemma-4-E2B and Qwen3.5-2B on IFEval, BFCL, strict-JSON extraction, or Q4 memory footprint on Jetson Orin Nano?
+[run]   Q2: Do dated MTEB retrieval scores, dimension/RAM tables, and llama.cpp support docs show that Qwen3-Embedding-0.6B, EmbeddingGemma-300M, or Llama-Embed-Nemotron-8B provides better memory recall with a <=4 GB Q8 footprint than the current Qwen3-Embedding-0.6B?
+[run]   Q3: What dated primary-source evidence from llama.cpp, Jetson Orin Nano benchmark logs, or official memory tables demonstrates whether a Qwen 3.5 or Gemma 4 sub-3B extraction LLM plus Qwen3-Embedding-0.6B or Llama-Embed-Nemotron-8B can run concurrently within ~4 GB on Jetson Orin Nano?
+[run]   Q4: What dated competitive signals from GitHub stars/velocity, release cadence, official docs, pricing, or open roles show which of Qwen 3.5, Gemma 4, Llama 4, and Llama-Embed-Nemotron-8B has the strongest momentum as a small local agent-memory stack for Jetson Orin Nano?
+[run] run_id 20260912T020749Z-small-local-models-for-an-agent
+[run] 4 searcher(s), 3 concurrent
+[run] searcher 1: ok
+[run]   query: Qwen 3.5 2B model card IFEval
+[run]   query: Gemma 4 E2B model card BFCL
+[run]   query: Llama 4 3B model card IFEval
+[run]   query: llama.cpp Jetson Orin Nano Q4 memory
+[run]   search: 18 unique results from 4 queries
+[run]   scraped https://qwen.ai/home (tier 3)
+[run]   scraped https://chat.qwen.ai/auth?action=signin (tier 3)
+[run]   scraped https://qwen.ai/blog?id=qwen3.8 (tier 3)
+[run]   5 claims in 2 attempt(s), 2099 completion tokens
+[run] searcher 2: ok
+[run]   query: MTEB retrieval leaderboard Qwen3-Embedding-0.6B
+[run]   query: EmbeddingGemma-300M model card dimensions
+[run]   query: Llama-Embed-Nemotron-8B model card dimensions
+[run]   query: llama.cpp Q8 quantization memory docs
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://mteb-leaderboard.hf.space/models/Qwen/Qwen3-Embedding-0.6B (tier 3)
+[run]   scraped https://huggingface.co/google/embeddinggemma-300m (tier 1)
+[run]   scraped https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md (tier 1)
+[run]   6 claims in 1 attempt(s), 4139 completion tokens
+[run] searcher 3: ok
+[run]   query: llama.cpp Jetson Orin Nano benchmark log
+[run]   query: Jetson Orin Nano 4GB memory table
+[run]   query: Qwen3-Embedding-0.6B memory requirements docs
+[run]   query: Llama-Embed-Nemotron-8B memory table
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://github.com/drwjkirkpatrick-web/jetson-llamacpp-benchmarks (tier 1)
+[run]   scraped https://github.com/alex-milla/Jetson-Nano-Orin-8Gb-Llama.cpp/blob/main/README.md (tier 1)
+[run]   scraped https://rahulkj.github.io/technology/2026/06/29/jetpack-llama-cuda.html (tier 3)
+[run]   6 claims in 1 attempt(s), 4066 completion tokens
+[run] searcher 4: ok
+[run]   query: Qwen 3.5 model GitHub repository
+[run]   query: Gemma 4 model GitHub repository
+[run]   query: Llama 4 model GitHub repository
+[run]   query: Llama-Embed-Nemotron-8B GitHub repository
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://www.alibabagroup.com/document-1960233590314762240 (tier 3)
+[run]   scraped https://deepmind.google/models/gemma/gemma-4/ (tier 3)
+[run]   scraped https://github.com/QwenLM (tier 1)
+[run]   5 claims in 1 attempt(s), 3448 completion tokens
+[run] 16 signal(s)
+[run] verify: ok
+[run]   verdicts: {'verified': 3, 'unverified': 3}
+[run] antithesis contributed 3 counter-record(s)
+[run] forecast p=0.28 resolves 2026-12-31
+[synth] provider=claude-cli model=claude-sonnet-5
+[synth] normalized 13 em dash(es) mechanically
+[synth] attempt 1: PASS (? tokens)
+[synth] published (linter-clean)
+[run] done: 12 model stage(s)
+reports/2026-09-12-small-local-models-for-an-agent.md
+[router] pipeline=market effort=standard
+[router] brief: Small local models for an agent-memory node on a Jetson Orin Nano (7.6 GB unified RAM, JetPack 6 / CUDA 12.6, llama.cpp GGUF): (1) best 2026 sub-3B instruction models for structured fact extraction to strict JSON (candidates to compare against our deployed gemma-4-E2B and Qwen3.5-2B: e.g. Qwen3.x 1.7B/2B, LFM2.5 1.2B/8B-A1B, Gemma 4 E2B/E4B, SmolLM3, Phi-4-mini, Granite 4 micro/tiny) with cited benchmarks for JSON/format compliance and extraction (IFEval, BFCL, structured-output evals) and memory footprint at Q4; (2) best small embedding models for memory recall (Qwen3-Embedding-0.6B currently; compare nomic-embed-text-v1.5, EmbeddingGemma-300M, bge-small/base, Granite-Embedding-R2, snowflake-arctic-embed-s, MiniLM) with MTEB retrieval scores, dimension, RAM at Q8, and llama.cpp support; (3) any evidence on running an extraction LLM plus an embedder together within ~4 GB. Cite dated sources; flag vendor claims vs independent measurements.
+rc=0

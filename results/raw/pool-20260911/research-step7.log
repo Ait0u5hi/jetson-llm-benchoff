@@ -1,0 +1,175 @@
+python3 runner/router.py "For a Jetson AGX Orin (SM87, 64GB unified) serving Qwen3.8-27B (hybrid Gated-DeltaNet) as a subagent worker pool: (1) current 2026 status of vLLM and SGLang support for hybrid GDN models on Ampere/SM87, (2) llama.cpp built-in router mode (--models-preset) vs mostlygeek llama-swap for multi-model residency and per-preset parallel slots, (3) options for pooling one role across two boxes when the gateway (MLflow AI Gateway) has no least-loaded routing. Cite dated sources."   
+[run] scoping on gateway-strong
+[run] searcher 1: ok
+[run]   query: vLLM docs Gated-DeltaNet SM87
+[run]   query: SGLang docs Gated-DeltaNet SM87
+[run]   query: vLLM GitHub issue Gated-DeltaNet CUDA
+[run]   query: SGLang GitHub issue Gated-DeltaNet Ampere
+[run]   search: 17 unique results from 4 queries
+[run]   scraped https://docs.sglang.io/docs/hardware-platforms/ascend-npus/model-deployment/tutorials/qwen3_5_397b (ti
+[run]   scraped https://github.com/sgl-project/sglang/issues/ (tier 1)
+[run]   scraped https://github.com/vllm-project/vllm (tier 1)
+[run]   5 claims in 2 attempt(s), 2376 completion tokens
+[run] searcher 2: ok
+[run]   query: llama.cpp --models-preset documentation
+[run]   query: llama.cpp models preset router source
+[run]   query: llama-swap release notes models preset
+[run]   query: llama-swap docs model switching overhead
+[run]   search: 21 unique results from 4 queries
+[run]   scraped https://github.com/ggml-org/llama.cpp/blob/master/docs/preset.md (tier 1)
+[run]   scraped https://huggingface.co/Maoweicao/my-bu-30b-a3b-gguf-q4km/blob/main/llama.cpp/docs/preset.md (tier 1)
+[run]   scraped https://huggingface.co/blog/ggml-org/model-management-in-llamacpp (tier 1)
+[run]   6 claims in 2 attempt(s), 1657 completion tokens
+[run] searcher 3: ok
+[run]   query: Qwen3.8-27B Jetson AGX Orin 2026
+[run]   query: vLLM Jetson AGX Orin GitHub issue
+[run]   query: SGLang Jetson AGX Orin release notes
+[run]   query: TensorRT-LLM Jetson AGX Orin benchmark
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://www.jetson-ai-lab.com/models/qwen3-8-27b/ (tier 3)
+[run]   scraped https://www.studioglobal.ai/discover/answers/search-6a9c1139e4a498a915ed32d4 (tier 3)
+[run]   scraped https://github.com/vllm-project/vllm/issues/7575 (tier 1)
+[run]   5 claims in 1 attempt(s), 4025 completion tokens
+[discovery] rejected: Llama (fails: ambiguous model/animal/dictionary term, not a distinct deployment/agent-infra product in the results)
+[discovery] rejected: SourceForge (fails: software directory, not an AI gateway or deployment platform)
+[discovery] rejected: alphacorp.ai (fails: publisher/blog)
+[discovery] rejected: aitoolgiant.com (fails: publisher/blog)
+[discovery] weak corroboration (1 domain(s)): llama.cpp
+[discovery] weak corroboration (1 domain(s)): Ollama
+[run] players found: MLflow (mlflow.org)
+[run] working thesis: For Qwen3.8-27B on Jetson AGX Orin in 2026, llama.cpp's --models-preset router plus llama-swap will provide documented support for multi-model residency and parallel slots, whereas vLLM/SGLang and MLflow AI Gateway will not provide documented production-ready support for hybrid Gated-DeltaNet SM87 or least-loaded cross-box role pooling.
+[run]   Q1: As of 2026, do vLLM and SGLang official documentation, release notes, or issue trackers show production-ready support for hybrid Gated-DeltaNet models such as Qwen3.8-27B on NVIDIA Ampere/SM87, and what documented limitations exist?
+[run]   Q2: Do llama.cpp official docs, release notes, or benchmarks demonstrate that --models-preset router mode and llama-swap provide multi-model residency and parallel slots on Jetson AGX Orin SM87 with 64GB memory for 27B-class models, and what are the measured or documented constraints?
+[run]   Q3: Does MLflow AI Gateway documentation, source code, or release notes as of 2026 show least-loaded routing across multiple Jetson AGX Orin boxes for role-based subagent worker pools, and what documented limitations exist?
+[run]   Q4: Do MLflow AI Gateway, LiteLLM, OpenRouter, or a custom scheduler provide documented load-aware routing, role assignment, and failover for Jetson AGX Orin worker pools, and what are their stated constraints?
+[run] run_id 20260911T200140Z-evaluate-the-2026-status-of-vllm
+[run] 4 searcher(s), 3 concurrent
+[run] searcher 4: ok
+[run]   query: MLflow AI Gateway docs load balancing 2026
+[run]   query: llama-swap GitHub cross-box role pooling 2026
+[run]   query: vLLM SGLang docs load balancing 2026
+[run]   query: vLLM SGLang 2026 release notes
+[run]   search: 23 unique results from 4 queries
+[run]   scraped https://mlflow.org/articles/role-of-load-balancing-ai-services/ (tier 1)
+[run]   scraped https://deepwiki.com/mostlygeek/llama-swap/6-examples-and-use-cases (tier 3)
+[run]   scraped https://modelslab.com/blog/api/hot-swap-local-llms-instantly-llama-swap-setup-guide-2026 (tier 3)
+[run]   5 claims in 2 attempt(s), 1433 completion tokens
+[run] searcher 5: ok
+[run]   query: vLLM SGLang llama.cpp GitHub repository releases
+[run]   query: llama-swap TensorRT-LLM GitHub repository issues 2026
+[run]   query: SM87 Snapdragon hybrid model GitHub issues
+[run]   query: GitHub API repository stars 2026
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://github.com/ggml-org/llama.cpp/issues/19219 (tier 1)
+[run]   scraped https://github.com/vllm-project/vllm (tier 1)
+[run]   scraped https://lectecy.github.io/vllm/ (tier 3)
+[run]   5 claims in 2 attempt(s), 1902 completion tokens
+[run] searcher 6: ok
+[run]   query: vLLM Jetson AGX Orin license deployment docs
+[run]   query: SGLang Jetson AGX Orin license deployment docs
+[run]   query: llama.cpp llama-swap Jetson AGX Orin license docs
+[run]   query: TensorRT-LLM Jetson AGX Orin license pricing docs
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://docs.sglang.io/docs/hardware-platforms/nvidia_jetson (tier 1)
+[run]   scraped https://github.com/sgl-project/sglang/blob/main/docs/docs/hardware-platforms/nvidia_jetson.mdx (tier 1
+[run]   scraped https://github.com/YuyiRobotLab/vllm-orin-release (tier 1)
+[run]   6 claims in 2 attempt(s), 1977 completion tokens
+[run] searcher 1: ok
+[run]   query: vLLM Gated-DeltaNet Qwen3.8-27B docs
+[run]   query: SGLang Gated-DeltaNet Qwen3.8-27B release notes
+[run]   query: vLLM issue Qwen3.8-27B SM87
+[run]   query: SGLang docs Gated-DeltaNet Ampere limitations
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://docs.sglang.io/cookbook/autoregressive/Qwen/Qwen3.8-27B (tier 3)
+[run]   scraped https://recipes.vllm.ai/Qwen/Qwen3.8-27B (tier 3)
+[run]   scraped https://github.com/vllm-project/vllm/issues/52682 (tier 1)
+[run]   6 claims in 1 attempt(s), 4252 completion tokens
+[run] 3 signal(s)
+[run] searcher 2: ok
+[run]   query: llama.cpp models-preset router docs
+[run]   query: llama.cpp release notes llama-swap
+[run]   query: llama.cpp benchmarks Jetson AGX Orin
+[run]   query: llama-swap Jetson AGX Orin 64GB
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://github.com/ggml-org/llama.cpp/blob/master/docs/preset.md (tier 1)
+[run]   scraped https://github.com/Crophes/orin-llm-bench (tier 1)
+[run]   scraped https://github.com/paddymac83/llama.cpp/blob/master/docs/preset.md (tier 1)
+[run]   5 claims in 3 attempt(s), 3176 completion tokens
+[run]   QUALITY WARNING (accepted anyway): record 2 states a number but has no `derivation` — say where the figure cam
+[run]   QUALITY WARNING (accepted anyway): record 4 states a number but has no `derivation` — say where the figure cam
+[run] searcher 3: ok
+[run]   query: MLflow AI Gateway least-loaded routing docs
+[run]   query: MLflow AI Gateway Jetson AGX Orin
+[run]   query: MLflow AI Gateway release notes 2026
+[run]   query: MLflow AI Gateway role-based subagent worker
+[run]   search: 18 unique results from 4 queries
+[run]   scraped https://mlflow.org/docs/latest/genai/governance/ai-gateway (tier 1)
+[run]   scraped https://mlflow.github.io/mlflow-website/docs/latest/genai/governance/ai-gateway/ (tier 1)
+[run]   scraped https://mlflow.openml.io/docs/latest/genai/governance/ai-gateway/ (tier 3)
+[run]   5 claims in 1 attempt(s), 2521 completion tokens
+[run] verify: ok
+[run]   verdicts: {'unverified': 3, 'verified': 3}
+[run] searcher 4: ok
+[run]   query: MLflow AI Gateway docs load-aware routing
+[run]   query: LiteLLM docs load-aware routing failover
+[run]   query: OpenRouter docs load-aware routing failover
+[run]   query: Jetson AGX Orin worker pool scheduler docs
+[run]   search: 24 unique results from 4 queries
+[run]   scraped https://github.com/OpenCureLabs/OpenCureLabs/blob/main/docs/EDGE-WORKERS.md (tier 1)
+[run]   scraped https://mlflow.org/articles/role-of-load-balancing-ai-services/ (tier 1)
+[run]   scraped https://github.com/mlflow/mlflow/issues/22072 (tier 1)
+[run]   6 claims in 3 attempt(s), 2243 completion tokens
+[run] 2 signal(s)
+[run] verify: ok
+[run]   verdicts: {'unverified': 1, 'verified': 5}
+[run] antithesis contributed 3 counter-record(s)
+[run] forecast p=0.35 resolves 2026-12-31
+[synth] provider=claude-cli model=claude-sonnet-5
+[synth] normalized 5 em dash(es) mechanically
+[synth] attempt 1: 1 lint failure(s) (? tokens)
+[synth]   linter exited 1 without verdicts: PASS: frontmatter (run_id/question/domain/date)
+PASS: BLUF section
+PASS: claims table section
+PASS: watch-triggers section
+PASS: method note
+PASS: WEP estimative language (>=2 distinct bands, found 5)
+[synth] attempt 2: 1 lint failure(s) (? tokens)
+[synth]   linter exited 1 without verdicts: PASS: frontmatter (run_id/question/domain/date)
+PASS: BLUF section
+PASS: claims table section
+PASS: watch-triggers section
+PASS: method note
+PASS: WEP estimative language (>=2 distinct bands, found 6)
+[synth] attempt 3: 1 lint failure(s) (? tokens)
+[synth]   linter exited 1 without verdicts: PASS: frontmatter (run_id/question/domain/date)
+PASS: BLUF section
+PASS: claims table section
+PASS: watch-triggers section
+PASS: method note
+PASS: WEP estimative language (>=2 distinct bands, found 4)
+FAIL: report never passed eval/check-report.sh after 3 attempts; nothing published. Last: ['linter exited 1 without verdicts: PASS: frontmatter (run_id/question/domain/date)\nPASS: BLUF section\nPASS: claims table section\nPASS: watch-triggers section\nPASS: method note\nPASS: WEP estimative language (>=2 distinct bands, found 4)']
+FAIL: synthesis did not pass the report gate for 20260911T194854Z-investigate-the-2026-status-of-vllm
+[run] antithesis contributed 5 counter-record(s)
+[run] forecast p=0.47 resolves 2026-12-31
+[synth] provider=claude-cli model=claude-sonnet-5
+[synth] attempt 1: 5 lint failure(s) (? tokens)
+[synth]   FAIL: frontmatter (run_id/question/domain/date)
+[synth]   FAIL: BLUF section
+[synth]   FAIL: claims table section
+[synth]   FAIL: watch-triggers section
+[synth]   FAIL: method note
+[synth] normalized 1 em dash(es) mechanically
+[synth] attempt 2: 5 lint failure(s) (? tokens)
+[synth]   FAIL: frontmatter (run_id/question/domain/date)
+[synth]   FAIL: BLUF section
+[synth]   FAIL: claims table section
+[synth]   FAIL: watch-triggers section
+[synth]   FAIL: method note
+[synth] normalized 15 em dash(es) mechanically
+[synth] attempt 3: PASS (? tokens)
+[synth] published (linter-clean)
+[run] done: 12 model stage(s)
+reports/2026-09-11-evaluate-the-2026-status-of-vllm.md
+[router] pipeline=market effort=standard
+[router] brief: Evaluate the 2026 status of vLLM and SGLang support for hybrid Gated-DeltaNet models on Ampere/SM87 hardware, compare llama.cpp's router mode (--models-preset) with llama-swap for multi-model residency and parallel slots, and explore options for cross-box role pooling without MLflow AI Gateway least-loaded routing. This informs the optimal setup for deploying Qwen3.8-27B on Jetson AGX Orin (SM87, 64GB) as a subagent worker pool.
+rc=0
