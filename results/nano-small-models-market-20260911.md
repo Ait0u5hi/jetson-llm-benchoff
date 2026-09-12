@@ -93,3 +93,50 @@ closeouts, identifier recall + pydantic-valid rate + s/doc, with a `--json-schem
 (llama.cpp) so JSON validity is engine-enforced and the arms compare on values only. Gemma 4 E4B
 (IFEval 96.7, ~3 GB) is the general-model upgrade path if the nano keeps >3.5 GB free after the
 embedder.
+
+## Third pass 2026-09-12: MEASURED — VAREX text-mode + Hindsight-shaped extraction on the candidates
+
+### A. VAREX-Bench (industry bench, arXiv 2603.15118), plain-text modality, 150-doc stratified sample (seed 20260912; 25 Flat / 97 Nested / 28 Table), official scorer with field exclusions, temperature 0, `response_format json_object`, llama.cpp b9552 on the AGX (`bench/varex/run_local.py`, raw in `results/raw/varex-20260912/`)
+
+| Model (GGUF) | Exact match | Flat / Nested / Table | Perfect docs | parse fail / length-stop | s/doc |
+|---|---|---|---|---|---|
+| **gemma-4-E2B-it Q4_K_M** (deployed) | **74.8%** | 68.0 / 74.6 / 77.4 | 29/150 | 0 / 0 | 5.1 |
+| Qwen3.5-2B Q4_K_M (thinking off) | 72.8% | 84.4 / 73.9 / 67.0 | 34/150 | 3 / 2 | 4.5 |
+| LFM2-1.2B-Extract Q8_0 | 43.4% | 69.4 / 42.9 / 36.9 | 9/150 | 13 / 7 | 4.7 |
+| NuExtract-2.0-2B Q8_0, native `# Template:` (JSON Schema -> typed template) | 39.8% | 56.5 / 38.1 / 39.0 | 14/150 | 0 / 0 | 4.6 |
+| NuExtract-2.0-2B Q8_0, README prompt | 6.1% | 27.9 / 4.6 / 3.3 | 2/150 | 12 / 2 | 3.1 |
+
+Reading: the two general 2B models are far ahead of both purpose-built extractors on nested and
+table schemas; the extractors are competitive only on flat schemas (LFM2 69.4, gemma 68.0). The
+paper's 90.8% for NuExtract 2.0 was the image modality through NuMind's own harness; on plain
+text through llama.cpp with a schema-to-template conversion it does not transfer. Caveats: one
+sample of 150 (not the full 1,777); Q4/Q8 quants; my template conversion for NuExtract is a
+best effort (nested `$defs` resolved, strings -> `verbatim-string`); gemma/Qwen may have seen
+these public government forms in pretraining (the forms are public, the values are synthetic).
+
+### B. Hindsight-shaped extraction (our 5 closeouts, identifier recall, `bench/extract_compare.py`, same pinned docs for all arms, nano :8081 except where noted)
+
+| Arm | recall | JSON ok | facts/doc | s/doc | note |
+|---|---|---|---|---|---|
+| gemma-4-E2B (nano, production server) | 0.26 | 5/5 | 8.2 | 25.8 | |
+| LFM2-1.2B-Extract Q8, 1500-tok cap | 0.37 | 1/5 | 1.0 | 27.1 | 3/5 hit the cap; invalid JSON = raw control chars in strings + invented top-level key |
+| LFM2-1.2B-Extract Q8, 4000-tok cap | 0.40 | 2/5 | 2.2 | 28.8 | 1 doc looped to 4000 tokens |
+| Qwen3.5-2B Q4, 1500-tok cap | 0.27 | 3/5 | 2.6 | 28.0 | |
+| Qwen3.5-2B Q4, 4000-tok cap | 0.33 | 4/5 | 2.6 | 37.7 | 1 doc looped to 4000 tokens (130 s) |
+| NuExtract-2.0-2B Q8, native template | 0.09 | 5/5 | 0.8 | 2.9 | returns `{"facts": []}` on 3/5 docs: not built for open-ended fact lists from prose |
+
+Grammar caveat [measured]: llama.cpp b9552 did NOT constrain LFM2's output with either
+`response_format: {type: json_schema, json_schema: {schema}}` or `{type: json_object, schema}`
+(the model returned an object with an invented key against an array schema), so all arms above
+ran effectively unconstrained; `json_object` alone did produce valid JSON in 150/150 gemma
+VAREX docs. Whether Hindsight's retain path gets a real grammar on the nano is an open check.
+NuExtract on the nano needs `--mmproj` dropped (text-only); with it the 1.27 GB projector
+cudaMalloc fails at the nano's headroom.
+
+### Verdict (third pass)
+Keep gemma-4-E2B for Hindsight extraction. On the industry bench it leads every candidate at
+its size; on our task the recall differences (0.26 vs 0.33-0.40) come with truncation, invalid
+JSON and looping on the challengers, at n=5. Qwen3.5-2B is the only near-peer (72.8 VAREX,
+best on Flat) and is already on the nano's disk if a second opinion is ever wanted.
+Purpose-built extractors (NuExtract 2.0, LFM2-Extract) are REJECTED for this workload: they
+need a closed schema with short values, not verbose fact sentences.

@@ -1,0 +1,54 @@
+{
+ "nano-qwen35-2b": [
+  {
+   "doc": "18198f61",
+   "secs": 130.5,
+   "json_ok": false,
+   "n_facts": 0,
+   "ids_in_src": 20,
+   "ids_recalled": 8,
+   "recall": 0.4,
+   "out_tokens": 4000
+  },
+  {
+   "doc": "aef815ce",
+   "secs": 20.1,
+   "json_ok": true,
+   "n_facts": 1,
+   "ids_in_src": 19,
+   "ids_recalled": 11,
+   "recall": 0.58,
+   "out_tokens": 581
+  },
+  {
+   "doc": "f8bbdcba",
+   "secs": 18.1,
+   "json_ok": true,
+   "n_facts": 8,
+   "ids_in_src": 5,
+   "ids_recalled": 1,
+   "recall": 0.2,
+   "out_tokens": 520
+  },
+  {
+   "doc": "6f90bc7c",
+   "secs": 10.2,
+   "json_ok": true,
+   "n_facts": 2,
+   "ids_in_src": 13,
+   "ids_recalled": 6,
+   "recall": 0.46,
+   "out_tokens": 282
+  },
+  {
+   "doc": "4afaa5e7",
+   "secs": 9.8,
+   "json_ok": true,
+   "n_facts": 2,
+   "ids_in_src": 7,
+   "ids_recalled": 0,
+   "recall": 0.0,
+   "out_tokens": 264
+  }
+ ]
+}

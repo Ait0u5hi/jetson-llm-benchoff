@@ -1,0 +1,7 @@
+== nano-gemma-e2b
+  {'doc': '18198f61', 'secs': 25.3, 'json_ok': True, 'n_facts': 10, 'ids_in_src': 15, 'ids_recalled': 2, 'recall': 0.13, 'out_tokens': 652}
+  {'doc': 'aef815ce', 'secs': 39.3, 'json_ok': True, 'n_facts': 15, 'ids_in_src': 19, 'ids_recalled': 10, 'recall': 0.53, 'out_tokens': 1022}
+  {'doc': 'f8bbdcba', 'secs': 30.5, 'json_ok': True, 'n_facts': 11, 'ids_in_src': 5, 'ids_recalled': 1, 'recall': 0.2, 'out_tokens': 816}
+  {'doc': '6f90bc7c', 'secs': 13.0, 'json_ok': True, 'n_facts': 2, 'ids_in_src': 13, 'ids_recalled': 6, 'recall': 0.46, 'out_tokens': 327}
+  {'doc': '4afaa5e7', 'secs': 21.1, 'json_ok': True, 'n_facts': 3, 'ids_in_src': 7, 'ids_recalled': 0, 'recall': 0.0, 'out_tokens': 554}
+  MEAN recall 0.26 | json_ok 5/5 | mean secs 25.8 | mean facts 8.2

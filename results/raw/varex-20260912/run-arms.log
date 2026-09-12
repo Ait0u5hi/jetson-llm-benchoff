@@ -1,0 +1,17 @@
+2026-09-12T01:59:50-05:00 == nuextract-2b-q8 (nuextract)
+  140/150 LTC-91C 6.0s 
+  150/150 cdph8763 1.8s 
+DONE nuextract-2b-q8
+2026-09-12T02:11:30-05:00 == nuextract-2b-q8-sysprompt (json_object)
+  140/150 LTC-91C 3.5s 
+  150/150 cdph8763 2.4s 
+DONE nuextract-2b-q8-sysprompt
+2026-09-12T02:19:32-05:00 == lfm2-1.2b-extract-q8 (json_object)
+  140/150 LTC-91C 7.5s 
+  150/150 cdph8763 4.9s 
+DONE lfm2-1.2b-extract-q8
+2026-09-12T02:31:27-05:00 == qwen35-2b-q4 (json_object)
+  140/150 LTC-91C 7.0s 
+  150/150 cdph8763 5.2s 
+DONE qwen35-2b-q4
+2026-09-12T02:42:46-05:00 ALL VAREX ARMS DONE
