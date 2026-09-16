@@ -48,3 +48,38 @@ Notes:
   is initialized, and re-imports the entry module).
 - Memory: at util 0.60 vLLM reserves about 37 GB. On a 64 GB Orin it cannot coexist with another
   large resident model; treat it as an on-demand endpoint.
+
+## Tool calling (agent workloads) — added 2026-09-15
+
+A vLLM server started without tool-call flags **cannot run an agent**, and the failure is a hard 400
+rather than a degraded reply:
+
+> `"auto" tool choice requires --enable-auto-tool-choice and --tool-call-parser to be set`
+
+That is correct, fail-closed behaviour. The model emits tool calls as TEXT in its own markup; the
+OpenAI contract needs them back as a structured `tool_calls` array, and only a tool-call parser does
+that translation. Without one, the alternative would be returning raw `<tool_call>` markup as
+assistant content — the client renders it as the model *talking about* calling a tool while the agent
+loop never dispatches. `vllm/entrypoints/openai/cli_args.py` enforces the pairing: auto tool choice
+without a parser is a startup error.
+
+**Pick the parser by the model's chat template, not by model family.** For
+`Qwen3.8-27B-AWQ-INT4` the template specifies XML-style calls —
+`<tool_call><function=name><parameter=key>value</parameter></function></tool_call>` — so the parser
+is `qwen3_xml`, NOT `hermes` (hermes expects `<tool_call>{json}</tool_call>` and would silently fail
+to match). Check `tokenizer_config.json`'s `chat_template` before choosing; vLLM 0.20 registers the
+names in `vllm/tool_parsers/__init__.py`.
+
+```
+  --reasoning-parser qwen3 \
+  --enable-auto-tool-choice --tool-call-parser qwen3_xml \
+```
+
+Keep the reasoning parser alongside it: on a reasoning model it strips the thinking block first, so
+the tool parser sees the actual output.
+
+Verified on the AGX worker (`~/.config/systemd/user/vllm-worker.service` ->
+`~/llamacpp-compose/vllm/start-vllm.sh`, backup `.bak-20260915`) on 2026-09-15: a `tool_choice: auto`
+request returns `finish_reason: tool_calls` with parsed arguments, reasoning still populated, the
+3x32k capacity flags unchanged, and neighbouring services (llama-swap 8B, nomic embeddings) alive.
+A full agent seat then ran end to end against it, locally.
