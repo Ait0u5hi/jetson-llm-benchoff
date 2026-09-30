@@ -5,14 +5,15 @@ facts), JSON validity, fact count, wall latency. Same prompt, same docs, tempera
 import json, os, re, sys, time, glob, urllib.request
 KEY = [l.split('=',1)[1].strip() for l in open(os.path.expanduser('~/litellm-compose/litellm.env')) if l.startswith('LITELLM_MASTER_KEY=')][0]
 ONLY=os.environ.get('ARMS')
+NANO=os.environ.get('NANO_HOST') or sys.exit('set NANO_HOST=address of the nano')
 # (url, model, key, style): style 'sys' = system prompt + doc; 'nuextract' = NuExtract '# Template:' format.
 # 2026-09-12 second pass: bench arms on nano :8081 (ephemeral llama-server, gemma stopped), grammar-enforced JSON.
 ARMS = {
-  'nano-gemma-e2b': ('http://10.10.0.1:8080/v1/chat/completions', 'gemma-e2b', None, 'sys'),
+  'nano-gemma-e2b': (f'http://{NANO}:8080/v1/chat/completions', 'gemma-e2b', None, 'sys'),
   'agx-cheap-8b':   ('http://127.0.0.1:5555/gateway/openai/v1/chat/completions', 'cheap', KEY, 'sys'),
-  'nano-nuextract-2b': ('http://10.10.0.1:8081/v1/chat/completions', 'bench', None, 'nuextract'),
-  'nano-lfm2-extract': ('http://10.10.0.1:8081/v1/chat/completions', 'bench', None, 'sys'),
-  'nano-qwen35-2b':  ('http://10.10.0.1:8081/v1/chat/completions', 'bench', None, 'sys'),
+  'nano-nuextract-2b': (f'http://{NANO}:8081/v1/chat/completions', 'bench', None, 'nuextract'),
+  'nano-lfm2-extract': (f'http://{NANO}:8081/v1/chat/completions', 'bench', None, 'sys'),
+  'nano-qwen35-2b':  (f'http://{NANO}:8081/v1/chat/completions', 'bench', None, 'sys'),
 }
 GRAMMAR = os.environ.get('GRAMMAR','1') == '1'
 FACT = {"type":"object","properties":{"fact":{"type":"string"},"entities":{"type":"array","items":{"type":"string"}}},"required":["fact","entities"]}
