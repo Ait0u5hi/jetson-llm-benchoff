@@ -1,0 +1,7 @@
+== nano-lfm2-extract
+  {'doc': '18198f61', 'secs': 30.9, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 18, 'ids_recalled': 0, 'recall': 0.0, 'out_tokens': 1500}
+  {'doc': 'aef815ce', 'secs': 25.3, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 19, 'ids_recalled': 15, 'recall': 0.79, 'out_tokens': 1224}
+  {'doc': 'f8bbdcba', 'secs': 30.9, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 5, 'ids_recalled': 1, 'recall': 0.2, 'out_tokens': 1500}
+  {'doc': '6f90bc7c', 'secs': 30.7, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 13, 'ids_recalled': 11, 'recall': 0.85, 'out_tokens': 1500}
+  {'doc': '4afaa5e7', 'secs': 17.8, 'json_ok': True, 'n_facts': 5, 'ids_in_src': 7, 'ids_recalled': 0, 'recall': 0.0, 'out_tokens': 854}
+  MEAN recall 0.37 | json_ok 1/5 | mean secs 27.1 | mean facts 1.0

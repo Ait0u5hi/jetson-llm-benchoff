@@ -1,0 +1,3 @@
+               total        used        free      shared  buff/cache   available
+Mem:              61          47           2           0          10          12
+RSS_kB VmRSS:	19736660 kB

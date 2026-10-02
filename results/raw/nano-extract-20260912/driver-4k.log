@@ -1,0 +1,46 @@
+2026-09-12T02:12:20-05:00 downloads done
+done NuExtract-2.0-2B-Q8_0.gguf
+done NuExtract-2.0-2B-mmproj-BF16.gguf
+done LFM2-1.2B-Extract-Q8_0.gguf
+ALLDONE
+2026-09-12T02:12:20-05:00 == arm nano-lfm2-extract
+62dfff6de72e78b7c618dad130a9019514dd4627264622f812c04f06bf014246
+{"status":"ok"}
+Mem:            7607        5759         163         257        1683        1348
+Swap:          20187        4708       15479
+== nano-lfm2-extract
+  {'doc': '18198f61', 'secs': 8.3, 'json_ok': True, 'n_facts': 8, 'ids_in_src': 18, 'ids_recalled': 0, 'recall': 0.0, 'out_tokens': 377}
+  {'doc': 'aef815ce', 'secs': 25.4, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 19, 'ids_recalled': 15, 'recall': 0.79, 'out_tokens': 1230}
+  {'doc': 'f8bbdcba', 'secs': 82.1, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 5, 'ids_recalled': 1, 'recall': 0.2, 'out_tokens': 4000}
+  {'doc': '6f90bc7c', 'secs': 17.9, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 13, 'ids_recalled': 11, 'recall': 0.85, 'out_tokens': 861}
+  {'doc': '4afaa5e7', 'secs': 10.3, 'json_ok': True, 'n_facts': 3, 'ids_in_src': 7, 'ids_recalled': 1, 'recall': 0.14, 'out_tokens': 481}
+  MEAN recall 0.40 | json_ok 2/5 | mean secs 28.8 | mean facts 2.2
+2.29.173.211 I slot print_timing: id  0 | task 6480 |        eval time =    9689.66 ms /   481 tokens (   20.14 ms per token,    49.64 tokens per second)
+2.29.173.215 I slot print_timing: id  0 | task 6480 |       total time =   10211.87 ms /  1693 tokens
+2.29.173.219 I slot print_timing: id  0 | task 6480 |    graphs reused =       6912
+2.29.173.540 I slot      release: id  0 | task 6480 | stop processing: n_tokens = 1692, truncated = 0
+2.29.173.576 I srv  update_slots: all slots are idle
+2026-09-12T02:15:02-05:00 == arm nano-qwen35-2b
+0b7efcc516e89817e7348fbf430667da9fd47e717f88aa0f4ae89350f2675e5f
+{"status":"ok"}
+Mem:            7607        5864         207         247        1535        1260
+Swap:          20187        4720       15467
+== nano-qwen35-2b
+  {'doc': '18198f61', 'secs': 130.5, 'json_ok': False, 'n_facts': 0, 'ids_in_src': 20, 'ids_recalled': 8, 'recall': 0.4, 'out_tokens': 4000}
+  {'doc': 'aef815ce', 'secs': 20.1, 'json_ok': True, 'n_facts': 1, 'ids_in_src': 19, 'ids_recalled': 11, 'recall': 0.58, 'out_tokens': 581}
+  {'doc': 'f8bbdcba', 'secs': 18.1, 'json_ok': True, 'n_facts': 8, 'ids_in_src': 5, 'ids_recalled': 1, 'recall': 0.2, 'out_tokens': 520}
+  {'doc': '6f90bc7c', 'secs': 10.2, 'json_ok': True, 'n_facts': 2, 'ids_in_src': 13, 'ids_recalled': 6, 'recall': 0.46, 'out_tokens': 282}
+  {'doc': '4afaa5e7', 'secs': 9.8, 'json_ok': True, 'n_facts': 2, 'ids_in_src': 7, 'ids_recalled': 0, 'recall': 0.0, 'out_tokens': 264}
+  MEAN recall 0.33 | json_ok 4/5 | mean secs 37.7 | mean facts 2.6
+3.19.228.566 I slot print_timing: id  0 | task 5396 |        eval time =    8431.11 ms /   264 tokens (   31.94 ms per token,    31.31 tokens per second)
+3.19.228.570 I slot print_timing: id  0 | task 5396 |       total time =    9672.01 ms /  1453 tokens
+3.19.228.574 I slot print_timing: id  0 | task 5396 |    graphs reused =       5616
+3.19.228.839 I slot      release: id  0 | task 5396 | stop processing: n_tokens = 1514, truncated = 0
+3.19.228.895 I srv  update_slots: all slots are idle
+llama-server
+hindsight-memory Up 5 weeks
+llama-server Up 20 seconds
+llama-embed-qwen3-0.6b Up 11 hours
+Mem:            7607        5540         120         231        1946        1605
+Swap:          20187        4739       15447
+2026-09-12T02:18:44-05:00 ALL ARMS DONE

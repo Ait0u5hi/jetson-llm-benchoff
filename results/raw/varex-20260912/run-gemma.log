@@ -1,0 +1,17 @@
+gemma-4-e2b-q4 style=json_object n=150 -> results/gemma-4-e2b-q4/text_flow
+  10/150 50070 2.8s 
+  20/150 2995 1.3s 
+  30/150 FDA-356v_Stat_Sec_Ext_11-09-22 9.4s 
+  40/150 i-929 3.5s 
+  50/150 92432.1-ca 3.2s 
+  60/150 MCD-1754 3.3s 
+  70/150 n-648 2.0s 
+  80/150 cm-981 6.0s 
+  90/150 VS122 3.7s 
+  100/150 aa137vw 3.7s 
+  110/150 DOC_20655 3.9s 
+  120/150 SF329E-05 3.9s 
+  130/150 GSA_1241E 6.6s 
+  140/150 LTC-91C 8.4s 
+  150/150 cdph8763 6.2s 
+DONE gemma-4-e2b-q4
