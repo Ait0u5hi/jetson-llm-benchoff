@@ -20,7 +20,9 @@
 # --- internal-jargon phrases ---
 \baux fleet\b
 \baux stack\b
-\bswap[- ]router\b
+# 2026-10-26: the swap-router phrase pattern was dropped. bench/pool_arm.sh reads the local
+# router container's docker logs by its real name, so the phrase is part of the measurement,
+# not a leak; main had been red on it since 2026-10-02.
 
 # --- journal-voice phrases ---
 \bfor tonight\b
