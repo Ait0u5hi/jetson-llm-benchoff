@@ -5,26 +5,17 @@
 #
 # NOTE this file lives in THIS repo, not gh-workflows — the shared
 # reusable ships no wordlist.
+#
+# Only GENERIC patterns live here: this repo is public, so a committed
+# wordlist is world-readable. The private names (hostnames, codenames,
+# the home-directory username, personal addresses) are in the repository
+# Actions secret CONTENT_SCAN_PATTERNS (same format, one regex per line),
+# passed to the reusable scan as secrets.patterns; findings from it are
+# reported as path:line only.
 
 # --- private LAN topology (RFC1918) ---
 \b10\.10\.0\.
 \b192\.168\.
-
-# --- private hostnames / box aliases ---
-\barthur\b
-\bagx-node\b
-\bbifrost\b
-\bheimdall\b
-
-# --- internal project codenames not for public docs ---
-\bnusomi\b
-\bspectry\b
-\bcorrograph\b
-\bfleet-harness\b
-\bgrounder-bench\b
-# "Hermes" is generic enough to hit false positives (Greek god, etc.);
-# scope to the internal-agent sense with the surrounding capitalization.
-\bHermes\s+(agent|slot|plugin|gateway)\b
 
 # --- internal-jargon phrases ---
 \baux fleet\b
@@ -36,10 +27,3 @@
 \bnext[- ]session\b
 \bstopping point\b
 \bqueued next-session\b
-
-# --- absolute homedir paths that leak the box layout ---
-/home/agx_orin
-/generative-AI-models
-
-# --- real-name / real-email patterns ---
-noah@x\.com
