@@ -3,12 +3,13 @@
 # Usage: pool_arm.sh <name> <gguf-relative-to-/models> <parallel> <ctx-per-slot> [extra llama-server flags...]
 # Mirrors ~/llamacpp-compose/compose.yml mounts (llamacpp-jetson:latest, /models, JetPack cuBLAS).
 set -euo pipefail
+GGUF_ROOT="${GGUF_ROOT:?set GGUF_ROOT=host directory that holds the gguf model tree}"
 NAME="$1"; GGUF="$2"; NP="$3"; CTX_SLOT="$4"; shift 4; EXTRA=("$@")
 PORT=8011; CTX=$((NP*CTX_SLOT)); OUT=~/jetson-llm-benchoff/results/raw/pool-20260911; mkdir -p "$OUT"
 CN="bench-pool-$NAME"
 docker rm -f "$CN" >/dev/null 2>&1 || true
 docker run -d --name "$CN" --runtime nvidia --network host \
-  -v /generative-AI-models/gguf:/models -v /usr/local/cuda-12.6/lib64:/jetpack-cuda:ro \
+  -v ${GGUF_ROOT}/gguf:/models -v /usr/local/cuda-12.6/lib64:/jetpack-cuda:ro \
   -e NVIDIA_VISIBLE_DEVICES=all -e LD_LIBRARY_PATH=/jetpack-cuda \
   "${IMG:-llamacpp-jetson:latest}" -m "/models/$GGUF" --alias "$NAME" -ngl 99 \
   --ctx-size "$CTX" --parallel "$NP" --jinja --flash-attn on --batch-size 2048 --ubatch-size 512 \

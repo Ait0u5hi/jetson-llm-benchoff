@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Drive the 3 nano extractor arms (2026-09-12): stop production gemma, run each candidate on :8081, bench, restore gemma.
 set -u
-N="${NANO_SSH:?set NANO_SSH=user@host of the nano}"; NANO_HOST="${NANO_HOST:?set NANO_HOST=address of the nano}"; G=/generative-AI-models/gguf
+GGUF_ROOT="${GGUF_ROOT:?set GGUF_ROOT=host directory that holds the gguf model tree}"
+N="${NANO_SSH:?set NANO_SSH=user@host of the nano}"; NANO_HOST="${NANO_HOST:?set NANO_HOST=address of the nano}"; G=${GGUF_ROOT}/gguf
 cd ~/jetson-llm-benchoff
 OUT=results/raw/nano-extract-20260912
 until ssh -o ConnectTimeout=8 $N 'grep -q ALLDONE ~/dl-extract.log' </dev/null 2>/dev/null; do sleep 20; done
@@ -10,7 +11,7 @@ run_arm() { # name model-args...
   local name=$1; shift
   case ",${ONLY_ARMS:-all}," in *,all,*|*,$name,*) ;; *) return;; esac
   echo "$(date -Is) == arm $name"
-  ssh $N "docker stop llama-server >/dev/null; docker rm -f bench-extract >/dev/null 2>&1; docker run -d --rm --name bench-extract --runtime nvidia --network host -v /generative-AI-models:/generative-AI-models:ro llamacpp-jetson:latest --host 0.0.0.0 --port 8081 --alias bench --ctx-size 8192 --parallel 1 --no-warmup -ngl 99 $*" </dev/null
+  ssh $N "docker stop llama-server >/dev/null; docker rm -f bench-extract >/dev/null 2>&1; docker run -d --rm --name bench-extract --runtime nvidia --network host -v ${GGUF_ROOT}:${GGUF_ROOT}:ro llamacpp-jetson:latest --host 0.0.0.0 --port 8081 --alias bench --ctx-size 8192 --parallel 1 --no-warmup -ngl 99 $*" </dev/null
   for i in $(seq 1 60); do curl -sf http://$NANO_HOST:8081/health >/dev/null && break; sleep 5; done
   curl -s http://$NANO_HOST:8081/health; echo
   ssh $N 'free -m | tail -2' </dev/null

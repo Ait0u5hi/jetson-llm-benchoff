@@ -3,7 +3,7 @@
 set -u; cd ~/varex-bench
 until grep -qE "^DONE|Traceback" results/run-gemma.log; do sleep 15; done
 docker rm -f varex-llm >/dev/null 2>&1
-M=/home/agx_orin/models/gguf-extract
+M=$HOME/models/gguf-extract
 arm() { # name style extra-args...
   local name=$1 style=$2; shift 2
   echo "$(date -Is) == $name ($style)"
