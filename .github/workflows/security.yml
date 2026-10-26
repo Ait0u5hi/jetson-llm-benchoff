@@ -3,9 +3,12 @@
 # the initial pre-publish sweep of this repo).
 #
 # Copied from Ait0u5hi/gh-workflows/templates/{python-plugin/security.yml,
-# content-scan.yml}. The content-scan wordlist lives in this repo at
-# .github/content-scan-patterns.txt (per that reusable's design — the
-# shared workflow ships no wordlist).
+# content-scan.yml}. The content-scan patterns come from two places (per
+# that reusable's design — the shared workflow ships no wordlist): the
+# generic ones in .github/content-scan-patterns.txt, and the private names
+# in the repository Actions secret CONTENT_SCAN_PATTERNS, because this repo
+# is public and a committed wordlist is world-readable. Findings from the
+# secret are reported as path:line only.
 name: Security
 
 on:
@@ -28,3 +31,7 @@ jobs:
 
   content-scan:
     uses: Ait0u5hi/gh-workflows/.github/workflows/reusable-content-scan.yml@v1
+    secrets:
+      # Settings → Secrets and variables → Actions → CONTENT_SCAN_PATTERNS:
+      # one ripgrep regex per line, same format as the committed file.
+      patterns: ${{ secrets.CONTENT_SCAN_PATTERNS }}

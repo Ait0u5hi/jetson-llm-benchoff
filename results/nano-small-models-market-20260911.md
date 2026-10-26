@@ -1,7 +1,7 @@
 # Small extraction + embedding models for the nano — market pass 2026-09-11/12
 
 Research-harness market run `20260912T020749Z` (report
-`~/research-harness/pipelines/market/reports/2026-09-12-small-local-models-for-an-agent.md`)
+`<local-research-pipeline>/pipelines/market/reports/2026-09-12-small-local-models-for-an-agent.md`)
 had DEGRADED search (11 ddgs fallbacks) and found no IFEval/BFCL or MTEB retrieval score for any
 candidate; verdict "cannot rank". The numbers below are a hand pass over primary model cards and
 papers (vendor-reported unless noted). Deployed today: gemma-4-E2B (extraction) + Qwen3-Embedding-0.6B.
